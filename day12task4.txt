@@ -1,0 +1,129 @@
+mysql> show databases table;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table' at line 1
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| basic              |
+| college            |
+| companydb          |
+| information_schema |
+| librarydb          |
+| mysql              |
+| performance_schema |
+| resort             |
+| sakila             |
+| shop               |
+| sys                |
+| ticket_booking_db  |
+| world              |
++--------------------+
+13 rows in set (0.02 sec)
+
+mysql> CREATE TABLE patients (
+    ->     patient_id INT PRIMARY KEY,
+    ->     patient_name VARCHAR(100),
+    ->     city VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE doctors (
+    ->     doctor_id INT PRIMARY KEY,
+    ->     doctor_name VARCHAR(100),
+    ->     specialty VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE appointments (
+    ->     appointment_id INT PRIMARY KEY,
+    ->     patient_id INT,
+    ->     doctor_id INT,
+    ->     appointment_date DATE,
+    ->     fees DECIMAL(10,2),
+    ->     FOREIGN KEY (patient_id) REFERENCES patients(patient_id),
+    ->     FOREIGN KEY (doctor_id) REFERENCES doctors(doctor_id)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> INSERT INTO patients (patient_id, patient_name, city) VALUES
+    -> (1, 'Alice', 'Chennai'),
+    -> (2, 'Bob', 'Mumbai'),
+    -> (3, 'Charlie', 'Chennai'),
+    -> (4, 'David', 'Delhi');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO doctors (doctor_id, doctor_name, specialty) VALUES
+    -> (1, 'Dr. Smith', 'Cardiology'),
+    -> (2, 'Dr. Johnson', 'Neurology'),
+    -> (3, 'Dr. Brown', 'Orthopedics');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> ^C
+mysql> INSERT INTO appointments (appointment_id, patient_id, doctor_id, appointment_date, fees) VALUES
+    -> (1, 1, 1, '2024-06-01', 1500),
+    -> (2, 2, 2, '2024-06-02', 2000),
+    -> (3, 3, 1, '2024-06-03', 1600),
+    -> (4, 4, 3, '2024-06-04', 1800);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT p.patient_name, p.city, d.doctor_name, d.specialty, a.fees
+    -> FROM patients p
+    -> JOIN appointments a ON p.patient_id = a.patient_id
+    -> JOIN doctors d ON a.doctor_id = d.doctor_id;
++--------------+---------+-------------+-------------+---------+
+| patient_name | city    | doctor_name | specialty   | fees    |
++--------------+---------+-------------+-------------+---------+
+| Alice        | Chennai | Dr. Smith   | Cardiology  | 1500.00 |
+| Charlie      | Chennai | Dr. Smith   | Cardiology  | 1600.00 |
+| Bob          | Mumbai  | Dr. Johnson | Neurology   | 2000.00 |
+| David        | Delhi   | Dr. Brown   | Orthopedics | 1800.00 |
++--------------+---------+-------------+-------------+---------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT p.patient_name, p.city, d.doctor_name, d.specialty, a.fees
+    -> FROM patients p
+    -> JOIN appointments a ON p.patient_id = a.patient_id
+    -> JOIN doctors d ON a.doctor_id = d.doctor_id
+    -> WHERE p.city = 'Chennai';
++--------------+---------+-------------+------------+---------+
+| patient_name | city    | doctor_name | specialty  | fees    |
++--------------+---------+-------------+------------+---------+
+| Alice        | Chennai | Dr. Smith   | Cardiology | 1500.00 |
+| Charlie      | Chennai | Dr. Smith   | Cardiology | 1600.00 |
++--------------+---------+-------------+------------+---------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT p.patient_name, p.city, d.doctor_name, d.specialty, a.fees
+    -> FROM patients p
+    -> JOIN appointments a ON p.patient_id = a.patient_id
+    -> JOIN doctors d ON a.doctor_id = d.doctor_id
+    -> WHERE d.specialty = 'Cardiology';
++--------------+---------+-------------+------------+---------+
+| patient_name | city    | doctor_name | specialty  | fees    |
++--------------+---------+-------------+------------+---------+
+| Alice        | Chennai | Dr. Smith   | Cardiology | 1500.00 |
+| Charlie      | Chennai | Dr. Smith   | Cardiology | 1600.00 |
++--------------+---------+-------------+------------+---------+
+2 rows in set (0.00 sec)
+
+mysql> ^C
+mysql> SELECT p.patient_name, p.city, d.doctor_name, a.appointment_date, a.fees
+    -> FROM patients p
+    -> JOIN appointments a ON p.patient_id = a.patient_id
+    -> JOIN doctors d ON a.doctor_id = d.doctor_id
+    -> WHERE a.appointment_date > '2024-06-02';
++--------------+---------+-------------+------------------+---------+
+| patient_name | city    | doctor_name | appointment_date | fees    |
++--------------+---------+-------------+------------------+---------+
+| Charlie      | Chennai | Dr. Smith   | 2024-06-03       | 1600.00 |
+| David        | Delhi   | Dr. Brown   | 2024-06-04       | 1800.00 |
++--------------+---------+-------------+------------------+---------+
+2 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Terminal close -- exit!
