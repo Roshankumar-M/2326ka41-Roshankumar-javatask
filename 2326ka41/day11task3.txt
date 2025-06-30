@@ -1,0 +1,124 @@
+mysql> CREATE TABLE products (
+    ->     product_id INT PRIMARY KEY,
+    ->     product_name VARCHAR(100),
+    ->     price DECIMAL(10, 2)
+    -> );
+ERROR 1046 (3D000): No database selected
+mysql> CREATE TABLE products (
+    ->     product_id INT PRIMARY KEY,
+    ->     product_name VARCHAR(100),
+    ->     price DECIMAL(10, 2)
+    -> );
+ERROR 1046 (3D000): No database selected
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| basic              |
+| college            |
+| companydb          |
+| information_schema |
+| librarydb          |
+| mysql              |
+| performance_schema |
+| resort             |
+| sakila             |
+| sys                |
+| ticket_booking_db  |
+| world              |
++--------------------+
+12 rows in set (0.02 sec)
+
+mysql> USE shop;
+ERROR 1049 (42000): Unknown database 'shop'
+mysql> use college;
+Database changed
+mysql> CREATE TABLE products (
+    ->     product_id INT PRIMARY KEY,
+    ->     product_name VARCHAR(100),
+    ->     price DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE DATABASE shop;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> USE shop;
+Database changed
+mysql> CREATE TABLE Product (
+    ->  ProductID INT PRIMARY KEY,
+    ->   ProductName VARCHAR(100),
+    -> Price DECIMAL(10, 2));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>  INSERT INTO PRODUCT VALUES(1,'SOAP',300);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PRODUCT VALUES(2,'DISPENSER',900);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> INSERT INTO PRODUCT VALUES(3,'DISHWASHER',29000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql>  SELECT * FROM PRODUCT;
++-----------+-------------+----------+
+| ProductID | ProductName | Price    |
++-----------+-------------+----------+
+|         1 | SOAP        |   300.00 |
+|         2 | DISPENSER   |   900.00 |
+|         3 | DISHWASHER  | 29000.00 |
++-----------+-------------+----------+
+3 rows in set (0.02 sec)
+
+mysql> SELECT MAX(Price) AS MaxPrice
+    -> FROM Product;
++----------+
+| MaxPrice |
++----------+
+| 29000.00 |
++----------+
+1 row in set (0.02 sec)
+
+mysql> SELECT MIN(Price) AS MinPrice
+    -> FROM Product;
++----------+
+| MinPrice |
++----------+
+|   300.00 |
++----------+
+1 row in set (0.00 sec)
+
+mysql>  SELECT
+    -> 
+    -> MAX(Price) AS MaxPrice,
+    ->  MIN(Price) AS MinPrice
+    -> FROM Product;
++----------+----------+
+| MaxPrice | MinPrice |
++----------+----------+
+| 29000.00 |   300.00 |
++----------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM Product
+    ->  WHERE Price = (SELECT MAX(Price) FROM Product);
++-----------+-------------+----------+
+| ProductID | ProductName | Price    |
++-----------+-------------+----------+
+|         3 | DISHWASHER  | 29000.00 |
++-----------+-------------+----------+
+1 row in set (0.03 sec)
+
+mysql> SELECT * FROM Product
+    ->  WHERE Price = (SELECT MIN(Price) FROM Product);
++-----------+-------------+--------+
+| ProductID | ProductName | Price  |
++-----------+-------------+--------+
+|         1 | SOAP        | 300.00 |
++-----------+-------------+--------+
+1 row in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> tee d:\day11task4.txt
